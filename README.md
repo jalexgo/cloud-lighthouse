@@ -57,29 +57,29 @@ Este sistema automatizado:
 ```mermaid
 graph TD
     subgraph "Fuente de Datos"
-        A[🌐 RSS Feed "What's New"]
+        A["RSS Feed 'What's New'"]
     end
 
     subgraph "Flujo de Ingesta y Análisis (Cada 24h)"
-        B[⏰ EventBridge Scheduler] --> C{λ Ingestor Lambda};
+        B["EventBridge Scheduler"] --> C{"Ingestor Lambda"};
         C --> A;
-        C -- "1. Analizar noticia" --> D[🧠 Amazon Bedrock];
-        D -- "2. Devuelve JSON enriquecido" --> C;
-        C -- "3. Almacenar" --> E[(🗄️ DynamoDB)];
+        C -->|1 Analizar noticia| D["Amazon Bedrock"];
+        D -->|2 Devuelve JSON enriquecido| C;
+        C -->|3 Almacenar| E[("DynamoDB")];
     end
 
     subgraph "Flujo de Síntesis y Publicación (Semanal)"
-        F[⏰ EventBridge Scheduler] --> G{λ Summarizer Lambda};
-        G -- "1. Obtener noticias de la semana" --> E;
-        G -- "2. Generar resumen y tendencias" --> D;
-        D -- "3. Devuelve HTML del reporte" --> G;
-        G -- "4. Publicar reporte" --> H[📦 S3 Bucket];
+        F["EventBridge Scheduler"] --> G{"Summarizer Lambda"};
+        G -->|1 Obtener noticias de la semana| E;
+        G -->|2 Generar resumen y tendencias| D;
+        D -->|3 Devuelve HTML del reporte| G;
+        G -->|4 Publicar reporte| H[("S3 Bucket")];
     end
 
     subgraph "Mecanismo de Entrega: Dashboard de Inteligencia"
-        I[👨‍💻 Usuario Final] --> J[🌐 Amazon CloudFront];
+        I["Usuario Final"] --> J["Amazon CloudFront"];
         J --> H;
-        H -- "Sirve sitio web estático" --> J;
+        H -->|Sirve sitio web estático| J;
     end
 
     style D fill:#FF9900,stroke:#333,stroke-width:2px
